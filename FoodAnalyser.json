@@ -1,0 +1,691 @@
+[
+    {
+        "id": "c47f54b.54c01a8",
+        "type": "tab",
+        "label": "Food Analysis",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "8d203d48.348cf",
+        "type": "watson-text-to-speech",
+        "z": "c47f54b.54c01a8",
+        "name": "",
+        "lang": "en-GB",
+        "langhidden": "en-GB",
+        "langcustom": "NoCustomisationSetting",
+        "langcustomhidden": "",
+        "voice": "en-GB_JamesV3Voice",
+        "voicehidden": "en-GB_JamesV3Voice",
+        "format": "audio/wav",
+        "password": "",
+        "apikey": "VmUztwtbPbk4y7_J5WuYzdukrRLOSLlas47V6EkOpIPt",
+        "payload-response": false,
+        "service-endpoint": "https://api.eu-gb.text-to-speech.watson.cloud.ibm.com/instances/c1e1851e-7108-40cd-84fa-bd25705a173a",
+        "x": 620,
+        "y": 260,
+        "wires": [
+            [
+                "fe5dafe.c4e8e5"
+            ]
+        ]
+    },
+    {
+        "id": "fe5dafe.c4e8e5",
+        "type": "ui_audio",
+        "z": "c47f54b.54c01a8",
+        "name": "",
+        "group": "b0b21dbd.58ccd",
+        "voice": "Microsoft David Desktop - English (United States)",
+        "always": "",
+        "x": 800,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "cdcd2de1.1efdd",
+        "type": "change",
+        "z": "c47f54b.54c01a8",
+        "name": "Food classification",
+        "rules": [
+            {
+                "t": "set",
+                "p": "food",
+                "pt": "msg",
+                "to": "result.images[0].classifiers[0].classes[0].class",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 850,
+        "y": 140,
+        "wires": [
+            [
+                "208b9369.22f6ac"
+            ]
+        ]
+    },
+    {
+        "id": "208b9369.22f6ac",
+        "type": "switch",
+        "z": "c47f54b.54c01a8",
+        "name": "Is a Food Item?",
+        "property": "food",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "non-food",
+                "vt": "str"
+            },
+            {
+                "t": "neq",
+                "v": "non-food",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 140,
+        "y": 200,
+        "wires": [
+            [
+                "9b88207c.ad066"
+            ],
+            [
+                "e4d7d613.3d6488",
+                "6beb419.a75cfc",
+                "a458fe30.5c58c"
+            ]
+        ]
+    },
+    {
+        "id": "e4d7d613.3d6488",
+        "type": "change",
+        "z": "c47f54b.54c01a8",
+        "name": "Announce food",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "food",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 420,
+        "y": 260,
+        "wires": [
+            [
+                "8d203d48.348cf"
+            ]
+        ]
+    },
+    {
+        "id": "9b88207c.ad066",
+        "type": "function",
+        "z": "c47f54b.54c01a8",
+        "name": "Not a Food - Empty Table",
+        "func": "msg.template=\"<style>\";\nmsg.template=msg.template+\"table { width: 440px; margin-top: 10px; }\";\nmsg.template=msg.template+\"th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; background-color: #FFFFFF; width: 50%;}\";\n\nmsg.template=msg.template+\"</style><h1>Not Valid</h1>\";\nmsg.template = msg.template;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 770,
+        "y": 200,
+        "wires": [
+            [
+                "c06031ab.19157"
+            ]
+        ]
+    },
+    {
+        "id": "c06031ab.19157",
+        "type": "ui_template",
+        "z": "c47f54b.54c01a8",
+        "group": "bfd45964.dd7418",
+        "name": "Nutrients Table",
+        "order": 2,
+        "width": "8",
+        "height": "11",
+        "format": "<div ng-bind-html=\"msg.template\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": false,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "x": 1080,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d2f78312.6c868",
+        "type": "http request",
+        "z": "c47f54b.54c01a8",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 430,
+        "y": 440,
+        "wires": [
+            [
+                "8ed3566c.c16f58"
+            ]
+        ]
+    },
+    {
+        "id": "d81e3f95.3aea6",
+        "type": "function",
+        "z": "c47f54b.54c01a8",
+        "name": "Table",
+        "func": "msg.template=\"<style>\";\nmsg.template=msg.template+\"table { width: 484px; margin-top: 12px; }\";\nmsg.template=msg.template+\"tr:nth-child(even){background-color: #f2f2f2;}\";\nmsg.template=msg.template+\"th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; width: 10%;}\";\nmsg.template=msg.template+\"</style>\";\n\nmsg.template=msg.template+\"<h3> \"+ msg.payload.foods[0].serving_qty +\" \"+ msg.payload.foods[0].serving_unit + \" \" + msg.payload.foods[0].food_name + \" contains : </h3>\";\n\nmsg.template=msg.template+\"</p><table span=100%><tr><th>Nutritional Information</th><th>Value</th></tr>\";\nmsg.template = msg.template + \"<tr><td> Calories </td><td>\" + msg.payload.foods[0].nf_calories + \" kcal</td></tr>\";\nmsg.template = msg.template + \"<tr><td> Total Fat </td><td>\" + msg.payload.foods[0].nf_total_fat + \" g</td></tr>\";\nmsg.template = msg.template + \"<tr><td> Saturated Fat </td><td>\" + msg.payload.foods[0].nf_saturated_fat + \" g</td></tr>\";\nmsg.template = msg.template + \"<tr><td> Cholesterol </td><td>\" + msg.payload.foods[0].nf_cholesterol + \" g</td></tr>\";\nmsg.template = msg.template + \"<tr><td> Sodium </td><td>\" + msg.payload.foods[0].nf_sodium + \" mg</td></tr>\";\nmsg.template = msg.template + \"<tr><td> Carbohydrate </td><td>\" + msg.payload.foods[0].nf_total_carbohydrate + \" g</td></tr>\";\nmsg.template = msg.template + \"<tr><td> Dietary fibres </td><td>\" + msg.payload.foods[0].nf_dietary_fiber + \" g</td></tr>\";\nmsg.template = msg.template + \"<tr><td> Sugars </td><td>\" + msg.payload.foods[0].nf_sugars + \" g</td></tr>\";\nmsg.template = msg.template + \"<tr><td> Protien </td><td>\" + msg.payload.foods[0].nf_protein + \" g</td></tr>\";\nmsg.template = msg.template + \"<tr><td> Potassium </td><td>\" + msg.payload.foods[0].nf_potassium + \" mg</td></tr>\";\nmsg.template = msg.template + \"</table>\";\nmsg.sugar=msg.payload.foods[0].nf_sugars\nmsg.fat=msg.payload.foods[0].nf_total_fat\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 730,
+        "y": 540,
+        "wires": [
+            [
+                "c06031ab.19157",
+                "dd2bbfc7.71b7e",
+                "e46b140.d55d7f"
+            ]
+        ]
+    },
+    {
+        "id": "6beb419.a75cfc",
+        "type": "debug",
+        "z": "c47f54b.54c01a8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "food",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "bae64cc8.d269d",
+        "type": "debug",
+        "z": "c47f54b.54c01a8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 670,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "a458fe30.5c58c",
+        "type": "function",
+        "z": "c47f54b.54c01a8",
+        "name": "Nutritionix API",
+        "func": "msg.url = \"https://trackapi.nutritionix.com/v2/search/instant?query=\"+msg.food\nmsg.headers = {\"Content-Type\": \"application/json\",\"x-app-id\":\"eb9237eb\",\"x-app-key\" :\"2081975a45af21160442584b40403f87\"};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 240,
+        "y": 440,
+        "wires": [
+            [
+                "d2f78312.6c868"
+            ]
+        ]
+    },
+    {
+        "id": "996d7110.0e2b9",
+        "type": "http request",
+        "z": "c47f54b.54c01a8",
+        "name": "",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 430,
+        "y": 540,
+        "wires": [
+            [
+                "992f7f8a.71777"
+            ]
+        ]
+    },
+    {
+        "id": "bb16cb0c.8b9e48",
+        "type": "function",
+        "z": "c47f54b.54c01a8",
+        "name": "Get nutirtionix",
+        "func": "msg.url = \"https://trackapi.nutritionix.com/v2/natural/nutrients\"\nmsg.headers = {\"Content-Type\": \"application/json\",\"x-app-id\":\"eb9237eb\",\"x-app-key\" :\"2081975a45af21160442584b40403f87\",\"accept\": \"application/json\"};\nmsg.payload = {query:msg.payload.common[0].food_name}\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 820,
+        "y": 440,
+        "wires": [
+            [
+                "996d7110.0e2b9"
+            ]
+        ]
+    },
+    {
+        "id": "8ed3566c.c16f58",
+        "type": "json",
+        "z": "c47f54b.54c01a8",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 610,
+        "y": 440,
+        "wires": [
+            [
+                "bb16cb0c.8b9e48",
+                "bae64cc8.d269d"
+            ]
+        ]
+    },
+    {
+        "id": "d2f954bf.bc4ef8",
+        "type": "debug",
+        "z": "c47f54b.54c01a8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 690,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "992f7f8a.71777",
+        "type": "json",
+        "z": "c47f54b.54c01a8",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 590,
+        "y": 540,
+        "wires": [
+            [
+                "d81e3f95.3aea6",
+                "d2f954bf.bc4ef8"
+            ]
+        ]
+    },
+    {
+        "id": "a461b88c.305f48",
+        "type": "visual-recognition-v3",
+        "z": "c47f54b.54c01a8",
+        "name": "test",
+        "vr-service-endpoint": "https://api.us-south.visual-recognition.watson.cloud.ibm.com/instances/fb532674-6fb2-4ed1-b75b-7b779ea1e8b8",
+        "image-feature": "classifyImage",
+        "lang": "en",
+        "x": 1290,
+        "y": 140,
+        "wires": [
+            [
+                "cf21d031.503dd"
+            ]
+        ]
+    },
+    {
+        "id": "73cfaca3.62b534",
+        "type": "function",
+        "z": "c47f54b.54c01a8",
+        "name": "",
+        "func": "msg.params={\"classifier_ids\":\"food\"}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 1145,
+        "y": 4,
+        "wires": [
+            [
+                "a461b88c.305f48"
+            ]
+        ]
+    },
+    {
+        "id": "cf21d031.503dd",
+        "type": "function",
+        "z": "c47f54b.54c01a8",
+        "name": "",
+        "func": "msg.payload=msg.result.images[0].classifiers[0].classes\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1256,
+        "y": 249,
+        "wires": [
+            [
+                "aed2fd09.ed1e7",
+                "e53ec0b3.bc86",
+                "cdcd2de1.1efdd"
+            ]
+        ]
+    },
+    {
+        "id": "e53ec0b3.bc86",
+        "type": "ui_template",
+        "z": "c47f54b.54c01a8",
+        "group": "bd28e603.fd7858",
+        "name": "",
+        "order": 1,
+        "width": "0",
+        "height": "0",
+        "format": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <style>\ndiv {\n  background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRW0hDhoAJb37GrwtcPQj0mb94lcqdJ63syqyid4L-QEAh9LHnMkK6pf_Ry5DD6TyfzoYlr78GJCkYGzOZth1dwQpfsXgluM50&usqp=CAU&ec=45732301');\n}\n</style>\n  <title>Food Plate</title>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n   <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\">\n  <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js\"></script>\n  <script src=\"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js\"></script>\n  <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js\"></script>\n  <style>\n  \n    color: #fff;\n\t}\n\t\n   .bg-light {\n    background-color: #00838F!important;\n\t}\n\t\n\t\n\t.custom-file {\n\t\tmargin-bottom: 14px;\n\t\t}\n\t\t\n\t.table .thead-dark th {\n\t\t\n\t\tbackground-color: #307d76;\n\t\tborder-color: #307d76;\n\t\tcolor:#FFFFFF;\n\t}\n\th4{\n\t   \n\t    text-align: center;\n\t\t    color: #000000;\n\t\t    background-color:#FF0000;\n\t\t    \n\t}\n\t\n\th5{\n\t    text-align: center;\n\t\t    color: #000000;\n\t\t    background-color:#FF0000;\n\t\t    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQMAAADDCAMAAACxkIT5AAAAA1BMVEX///+nxBvIAAAASElEQVR4nO3BMQEAAADCoPVPbQwfoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+BsYMAAFjd3WkAAAAAElFTkSuQmCC');\n\t\t}\n\t\t.text-center {\n\t\t  text-align: center;\n\t\t  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQMAAADDCAMAAACxkIT5AAAAA1BMVEX///+nxBvIAAAASElEQVR4nO3BMQEAAADCoPVPbQwfoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+BsYMAAFjd3WkAAAAAElFTkSuQmCC');\n\t\t}\n\t.imgdiv\n\t{\n\t\talign:center;\n\t\tbackground-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRW0hDhoAJb37GrwtcPQj0mb94lcqdJ63syqyid4L-QEAh9LHnMkK6pf_Ry5DD6TyfzoYlr78GJCkYGzOZth1dwQpfsXgluM50&usqp=CAU&ec=45732301');\n\t}\n\t</style>\n</head>\n<body>\n\t\n\t\t<div class=\"justify-content-center\">\n\t\t\t<h4 class=\"text-center\">Upload Food Image </h4>\n\t\t</div>\n\t\n\t\n    <div class=\"container\">\n\t\t<div class=\"row\">\n\t\t\t<div class=\"col-sm-2\">\n\t\t\t</div>\n\t\t\t<div class=\"col-sm-8\">\n\t\t\t\t\n\t\t\t\t\t<div class=\"custom-file\">\n\t\t\t\t\t\n\t\t\t\t\t\t<input type=\"file\" name=\"pic\" accept=\"image/*\" onchange=\"readURL(this);\" class=\"custom-file-input\" id=\"customFile\">\n\t\t\t\t\t\t\n\t\t\t\t\t\t<label class=\"custom-file-label\" for=\"customFile\">Choose file</label>\n\t\t\t\t\t</div>\n\t\t\t\t\t<br>\n\t\t\t\t\t<div class=\"imgdiv\">\n\t\t\t\t\t\t<img src=\"#\" id=\"blah\" class=\"rounded\" alt=\"Selected Image\">\n\t\t\t\t\t</div>\n\t\t\t\t\t<!--<md-button ng-click=\"send({payload:action()})\">\n\t\t\t\t\t\tPredict\n\t\t\t\t\t</md-button>-->\n\t\t\t\t\t<button type=\"submit\" ng-click=\"send({payload:action()})\" class=\"btn btn-success\">Submit</button>\n\t\t\t\t\n\t\t\t\t\n\t\t\t</div>\n\t\t\t<div class=\"col-sm-2\">\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"row\">\n\t\t\t<div class=\"col-sm-2\">\n\t\t\t</div>\n\t\t\t<div class=\"col-sm-8\">\n\t\t\t<h5> The Recognised Objects  </h5>\n\t\t\t\n\t\t\t<table class=\"table\">\n\t\t\t\t<thead class=\"thead-dark\">\n\t\t\t\t  <tr>\n\t\t\t\t\t<th>Class</th>\n\t\t\t\t\t<th>Score</th>\n\t\t\t\t  </tr>\n\t\t\t\t</thead>\n\t\t\t\t<tbody id=\"scoretable\">\n\t\t\t\t</tbody>\n\t\t\t  </table>\n\t\t\t  \n\t\t\t </div>\n\t\t\t<div class=\"col-sm-2\">\n\t\t\t</div>\n\t</div>\t\n</body>\n</html>\n<script>\nvar x=\"\";\n    function readURL(input) {\n        if (input.files && input.files[0]) {\n            var reader = new FileReader();\n\n            reader.onload = function (e) {\n                $('#blah')\n                    .attr('src', e.target.result)\n                    .width(150)\n                    .height(200);\n            };\n\n            reader.readAsDataURL(input.files[0]);\n            x= input.files[0]\n\n            \n            \n\n        }\n    }\n    function getdata(data)\n\t{\n\t\t var html = '';\n            if(data != 0)\n\t\t\t{\n\t\t\t\t$.each(data, function(i){\n\t\t\t\tvar row = data[i];\n\t\t\t\tconsole.log(row);\n\t\t\t\thtml += '<tr>';\n\t\t\t\thtml += '<td>';\n\t\t\t\thtml +=  row.class;\n\t\t\t\thtml += '</td>';\n\t\t\t\thtml += '<td>';\n\t\t\t\thtml +=  row.score;\n\t\t\t\thtml += '</td>';\n\t\t\t\thtml += '</tr>';\n\t\t\t});\n\t\t\t}\n\t\t\telse\n\t\t\t\thtml+=\"<div>No Data</div>\";\n\t\t\t$('#scoretable').html(html);\n\t}\n    (function(scope) {\n        scope.$watch('msg.payload', function(data) {\n            console.log('Position 2');\n            console.dir(data);\n            getdata(data);\n\n        });\n    })(scope);\n    \n    \n// or overwrite value in your callback function ...\nthis.scope.action = function() { return x; }\n\n</script>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "x": 1069,
+        "y": 118,
+        "wires": [
+            [
+                "73cfaca3.62b534"
+            ]
+        ]
+    },
+    {
+        "id": "aed2fd09.ed1e7",
+        "type": "debug",
+        "z": "c47f54b.54c01a8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 1615.5,
+        "y": 191,
+        "wires": []
+    },
+    {
+        "id": "bae2ee5d.69c1e",
+        "type": "ui_text",
+        "z": "c47f54b.54c01a8",
+        "group": "b0b21dbd.58ccd",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "Sugar Warnings",
+        "label": "",
+        "format": "{{msg.sugar}}",
+        "layout": "col-center",
+        "x": 1380,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "846e3f2a.81d25",
+        "type": "ui_text",
+        "z": "c47f54b.54c01a8",
+        "group": "b0b21dbd.58ccd",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "Fat Warning",
+        "label": "",
+        "format": "{{msg.fat}}",
+        "layout": "col-center",
+        "x": 1370,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "dd2bbfc7.71b7e",
+        "type": "switch",
+        "z": "c47f54b.54c01a8",
+        "name": "",
+        "property": "sugar",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gte",
+                "v": "3",
+                "vt": "num"
+            },
+            {
+                "t": "lt",
+                "v": "3",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1030,
+        "y": 500,
+        "wires": [
+            [
+                "4c9c942c.65d40c"
+            ],
+            [
+                "b66d6fd4.94da5"
+            ]
+        ]
+    },
+    {
+        "id": "4c9c942c.65d40c",
+        "type": "change",
+        "z": "c47f54b.54c01a8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "sugar",
+                "pt": "msg",
+                "to": "Warning: High in Sugar",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1180,
+        "y": 480,
+        "wires": [
+            [
+                "bae2ee5d.69c1e"
+            ]
+        ]
+    },
+    {
+        "id": "e46b140.d55d7f",
+        "type": "switch",
+        "z": "c47f54b.54c01a8",
+        "name": "",
+        "property": "fat",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gte",
+                "v": "5",
+                "vt": "num"
+            },
+            {
+                "t": "lt",
+                "v": "5",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1030,
+        "y": 589,
+        "wires": [
+            [
+                "107a66a6.304b49"
+            ],
+            [
+                "4c3284a4.d085bc"
+            ]
+        ]
+    },
+    {
+        "id": "107a66a6.304b49",
+        "type": "change",
+        "z": "c47f54b.54c01a8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "fat",
+                "pt": "msg",
+                "to": "Warning: High in Fat",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1170,
+        "y": 560,
+        "wires": [
+            [
+                "846e3f2a.81d25"
+            ]
+        ]
+    },
+    {
+        "id": "4c3284a4.d085bc",
+        "type": "change",
+        "z": "c47f54b.54c01a8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "fat",
+                "pt": "msg",
+                "to": " Normal  ",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1170,
+        "y": 600,
+        "wires": [
+            [
+                "846e3f2a.81d25"
+            ]
+        ]
+    },
+    {
+        "id": "b66d6fd4.94da5",
+        "type": "change",
+        "z": "c47f54b.54c01a8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "sugar",
+                "pt": "msg",
+                "to": "Normal",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1180,
+        "y": 520,
+        "wires": [
+            [
+                "bae2ee5d.69c1e"
+            ]
+        ]
+    },
+    {
+        "id": "b0b21dbd.58ccd",
+        "type": "ui_group",
+        "z": "",
+        "name": "Result",
+        "tab": "13508c24.451394",
+        "order": 4,
+        "disp": true,
+        "width": "9",
+        "collapse": false
+    },
+    {
+        "id": "bfd45964.dd7418",
+        "type": "ui_group",
+        "z": "",
+        "name": "Nutrition Information",
+        "tab": "13508c24.451394",
+        "order": 5,
+        "disp": true,
+        "width": "9",
+        "collapse": false
+    },
+    {
+        "id": "bd28e603.fd7858",
+        "type": "ui_group",
+        "z": "",
+        "name": "Image Input",
+        "tab": "13508c24.451394",
+        "order": 1,
+        "disp": true,
+        "width": "9",
+        "collapse": false
+    },
+    {
+        "id": "13508c24.451394",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Food Analysis",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
